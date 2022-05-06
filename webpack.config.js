@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
     mode: 'development',
-    entry: './src/app/script.js',
+    entry: './src/main.js',
     output: {
         filename: 'main.js',
         path: path.resolve(__dirname, 'dist')
@@ -15,6 +15,7 @@ module.exports = {
         })
     ],
     devServer: {
-        static: './dist'
+        static: './dist',
+        port: 80
     }
 }
