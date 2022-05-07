@@ -5,9 +5,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 24px;
 }
 
 #cvs {
     border: 1px solid rgb(214, 214, 214);
     outline: none;
+}
+
+#stopGame {
+    padding: 8px 16px;
+    background-color: #fafafa;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:active {
+        background-color: lightgray;
+    }
 }
