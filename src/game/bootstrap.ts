@@ -5,7 +5,6 @@ const ctx = cvs.getContext('2d')
 
 if (ctx) {
     drawBg(ctx)
-    
 }
 
 const start = () => {
