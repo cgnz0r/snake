@@ -1,26 +1,30 @@
-import { settings } from "../constants/settings";
+import { settings } from "../constants/settings"
 
 // colors
-const backgroundColor = settings.palette.whiteColors[0]
-const cellColor = settings.palette.primaryColors[1]
+const BACKGROUND_COLOR = settings.PALETTE.whiteColors[0]
+const CELL_COLOR = settings.PALETTE.primaryColors[1]
 
-export const drawBg = (ctx: CanvasRenderingContext2D): void => {
-    // background coloring
-    ctx.fillStyle = backgroundColor
-    ctx.fillRect(0, 0, settings.canvasWidth, settings.canvasWidth);
+const setBackgroundColor = (ctx: CanvasRenderingContext2D): void => {
+    ctx.fillStyle = BACKGROUND_COLOR
+    ctx.fillRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
+}
 
-    // cells coloring
-    ctx.fillStyle = cellColor
-    const cellQtyPerLine = settings.canvasWidth / settings.cell.width;
-
-    for (let i = 0; i < cellQtyPerLine; i++) {
-        for (let j = 0; j < cellQtyPerLine; j++ ) {
+const drawCells = (ctx: CanvasRenderingContext2D): void => {
+    ctx.fillStyle = CELL_COLOR
+    
+    for (let i = 0; i < settings.DIMENSION; i++) {
+        for (let j = 0; j < settings.DIMENSION; j++ ) {
             ctx.fillRect(
-                settings.cell.borderWidth + settings.cell.width * i, 
-                settings.cell.borderWidth + settings.cell.width * j, 
-                settings.cell.width - settings.cell.borderWidth * 2, 
-                settings.cell.width - settings.cell.borderWidth * 2
+                settings.GAP + settings.CELL_SIZE * i, 
+                settings.GAP + settings.CELL_SIZE * j, 
+                settings.RECT_CELL_SIZE, 
+                settings.RECT_CELL_SIZE
             )
         }
     }
+}
+
+export const drawBackground = (ctx: CanvasRenderingContext2D): void => {
+    setBackgroundColor(ctx)
+    drawCells(ctx)
 }
