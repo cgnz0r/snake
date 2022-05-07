@@ -5,18 +5,16 @@ import { settings } from "../constants/settings"
 const cvs = <HTMLCanvasElement>document.getElementById('cvs')
 const ctx = cvs.getContext('2d')
 
-const SNAKE_COLOR = settings.PALETTE.secondaryColorsA[2]
+const SNAKE_COLOR = settings.PALETTE.secondaryColor
 
-const stopGameButton = document.getElementById('stopGame')
-
-if (ctx && stopGameButton) {
+if (ctx) {
     cvs.focus()
     drawBackground(ctx)
     const snake = new Snake(ctx, SNAKE_COLOR)
 
     // for debugging
-    stopGameButton.addEventListener('click', () => {
-        snake.stop()
+    document.getElementById('stopGame')!.addEventListener('click', () => {
+        snake.kill()
     })
 }
 

@@ -6,10 +6,11 @@ const RECT_CELL_SIZE                = CELL_SIZE - GAP * 2
 const CANVAS_CENTER_CELL_POSITION   = GAP * Math.ceil(CANVAS_SIZE / 2 / GAP)
 
 const PALETTE = {
-    secondaryColorsA: [ '#98ED00', '#82B22C', '#639A00', '#B4F63D', '#C6F66F' ],
-    secondaryColorsB: [ '#6C0AAB', '#5D2680', '#45036F', '#9A3FD5', '#AA67D5' ],
-    primaryColors   : [ '#FF9200', '#BF8230', '#A65F00', '#FFAD40', '#FFC373' ],
-    whiteColors     : [ '#FAFAFA' ]
+    secondaryColor  : 'rgb(130, 178, 44)', // green
+    secondaryColorsB: [ '#6C0AAB', '#5D2680', '#45036F', '#9A3FD5', '#AA67D5' ], // purple
+    primaryColors   : [ '#FF9200', '#BF8230', '#A65F00', '#FFAD40', '#FFC373' ], // orange
+    whiteColor      : 'rgb(250, 250, 250)',
+    experimental    : 'rgba(206, 206, 206, 0.4)'
 }
 
 export const settings = {

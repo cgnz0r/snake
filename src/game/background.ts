@@ -1,8 +1,8 @@
 import { settings } from "../constants/settings"
 
 // colors
-const BACKGROUND_COLOR = settings.PALETTE.whiteColors[0]
-const CELL_COLOR = settings.PALETTE.primaryColors[1]
+const BACKGROUND_COLOR = settings.PALETTE.whiteColor
+const CELL_COLOR = settings.PALETTE.experimental
 
 const setBackgroundColor = (ctx: CanvasRenderingContext2D): void => {
     ctx.fillStyle = BACKGROUND_COLOR
@@ -25,6 +25,7 @@ const drawCells = (ctx: CanvasRenderingContext2D): void => {
 }
 
 export const drawBackground = (ctx: CanvasRenderingContext2D): void => {
+    ctx.clearRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
     setBackgroundColor(ctx)
     drawCells(ctx)
 }
