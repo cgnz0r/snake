@@ -12,6 +12,12 @@ if (ctx) {
     drawBackground(ctx)
     const snake = new Snake(ctx, SNAKE_COLOR)
 
+    const field = []
+
+    // snake.watchField(foodField)
+
+    // field.generate
+
     // for debugging
     document.getElementById('stopGame')!.addEventListener('click', () => {
         snake.kill()

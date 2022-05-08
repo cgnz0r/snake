@@ -26,11 +26,11 @@ export class Snake {
         return this._headPosition;
     }
 
-    public set headPosition(coords: ICoords) {
-        this._headPosition = coords
+    public set headPosition(headCoords: ICoords) {
+        this._headPosition = headCoords
 
         this._tail.forEach(this._drawCell)
-        this._drawCell(coords)
+        this._drawCell(headCoords)
     }
 
     private _direction: Direction | null = null
@@ -41,13 +41,14 @@ export class Snake {
 
     set direction(value: Direction | null) {
         if (this._direction === null && value !== null) {
-            this._startCrawl();
+            this._startCrawling();
         }
         this._direction = value
     }
 
     private _requestId: number | null = null
 
+    private _stomach: Array<ICoords> = []
     private _tail: Array<ICoords> = []
 
     // todo remove
@@ -77,6 +78,11 @@ export class Snake {
         // end of temp block
 
         this._initEvents();
+    }
+
+    // todo
+    public watchField = (field: []) => {
+        console.log('snake watching')
     }
 
     public kill = (): void => {
@@ -138,52 +144,96 @@ export class Snake {
         }
     }
 
-    private _startCrawl = (): void => {
+    private _startCrawling = (): void => {
         let start = new Date().getTime()
         
         const loop = () => {
             const delta = new Date().getTime() - start
 
             if (delta > SNAKE_SPEED) {
-                // helper
-                const hasHeadPosition = (p: ICoords) => p.x === this.headPosition.x && p.y === this.headPosition.y
-
                 start = new Date().getTime()
                 
                 drawBackground(this.context)
-                // temp block; todo remove
+
+
+
+                // temp block; _____________________________________________
+                // todo remove
                 this.color = settings.PALETTE.secondaryColorsB[0]
-                this.foodPositions.forEach(coords => this.context.fillRect(
-                    coords.x + settings.GAP, 
-                    coords.y + settings.GAP,
-                    settings.RECT_CELL_SIZE,
-                    settings.RECT_CELL_SIZE
-                ))
+                this.foodPositions.forEach(this._drawCell)
                 this.color = settings.PALETTE.secondaryColor
-                // end of temp block
+                // end of temp block _______________________________________
+
+
+
+
                 this._updateColor()
 
                 let newHeadPosition: ICoords = this._getNewPosition(this.direction as Direction)
 
                 // check if tail is food ;D
-                if (this._tail.some(hasHeadPosition)) alert('oops.. you lose')
+                if (this._tail.some(p => 
+                        p.x === this.headPosition.x 
+                        && p.y === this.headPosition.y
+                    )
+                ) {
+                    alert('ohhh... the snake ate itself')
+                    /** 
+                     * BUG with kill method
+                     * doesn't work
+                     */
+                    this.kill()
+                }
 
                 this._tail.unshift(this.headPosition)
 
-                // check if time for dinner
-                // todo replace foodPositions with another module
-                const extensionIndex = this.foodPositions.findIndex(foodCoords => 
-                    this._tail.at(-1)!.x === foodCoords.x 
-                    && this._tail.at(-1)!.y === foodCoords.y)
 
-                if (extensionIndex === -1) {
-                    this._tail.pop();
-                } else {
-                    this.foodPositions = [
-                        ...this.foodPositions.slice(0, extensionIndex), 
-                        ...this.foodPositions.slice(1 + extensionIndex)
-                    ];
+                // gastrointestinal tract
+
+                if (this.foodPositions.some(p => 
+                        p.x === newHeadPosition.x
+                        && p.y === newHeadPosition.y
+                    )
+                ) { 
+                    console.log('nyam : digestion :', newHeadPosition)
+                    this._stomach.push(newHeadPosition)
+                    console.log('stomach :', Object.assign({}, this._stomach))
                 }
+
+                let removeIdx = -1
+                const digestedFoodCoords = this._stomach.find((food, idx) => {
+                    const x = this._tail.length ? this._tail.at(-1)!.x : this.headPosition.x
+                    const y = this._tail.length ? this._tail.at(-1)!.y : this.headPosition.y
+            
+                    const isDigested = food.x === x && food.y === y
+                    
+                    if (isDigested) removeIdx = idx
+                    
+                    return isDigested
+                })
+
+                if (digestedFoodCoords) {
+                    console.log('digested :', digestedFoodCoords)
+                    this._stomach = [
+                        ...this._stomach.slice(0, removeIdx), 
+                        ...this._stomach.slice(1 + removeIdx)
+                    ]
+                    const digestedFoodIndex = this.foodPositions.findIndex(coords => 
+                        digestedFoodCoords.x === coords.x 
+                        && digestedFoodCoords.y === coords.y
+                    )
+                    this.foodPositions = [
+                        ...this.foodPositions.slice(0, digestedFoodIndex), 
+                        ...this.foodPositions.slice(1 + digestedFoodIndex)
+                    ]
+                    console.log('the snake grew by 1')
+                } else {
+                    this._tail.pop();
+                }
+                
+
+
+
 
                 this.headPosition = newHeadPosition;
             }
@@ -204,6 +254,12 @@ export class Snake {
     
             lastPressedKey = e.keyCode
 
+            /**
+             * BUG with opposite
+             * example:
+             * press right
+             * press down and left
+             */
             switch(e.keyCode) {
                 case 37: 
                     if (this.direction !== Direction.Right) this.direction = Direction.Left; 
