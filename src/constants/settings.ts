@@ -1,6 +1,7 @@
 const CANVAS_SIZE                   = 640
 const DIMENSION                     = 16 // 25bug
 const GAP                           = 1  // 0.5bug
+const GAME_SPEED                    = 300
 const CELL_SIZE                     = CANVAS_SIZE / DIMENSION
 const RECT_CELL_SIZE                = CELL_SIZE - GAP * 2
 const CANVAS_CENTER_CELL_POSITION   = GAP * Math.ceil(CANVAS_SIZE / 2 / GAP)
@@ -14,20 +15,26 @@ const PALETTE = {
 }
 
 const BACKGROUND_CELL_COLOR = PALETTE.experimental
-const BACKGROUND_COLOR = PALETTE.whiteColor
-const SNAKE_COLOR = PALETTE.secondaryColor
-const SNAKE_SPEED = 300
+const BACKGROUND_COLOR      = PALETTE.whiteColor
+const SNAKE_COLOR           = PALETTE.secondaryColor
+const FRUIT_COLOR           = PALETTE.secondaryColorsB[2]
 
 export const settings = {
+    // game
     CANVAS_SIZE,
     DIMENSION,
+    GAP,
+    GAME_SPEED,
+
+    // cell size & position
     CELL_SIZE,
     RECT_CELL_SIZE,
     CANVAS_CENTER_CELL_POSITION,
-    GAP,
+    
+    // colors
     PALETTE,
     BACKGROUND_CELL_COLOR,
     BACKGROUND_COLOR,
     SNAKE_COLOR,
-    SNAKE_SPEED
+    FRUIT_COLOR
 }

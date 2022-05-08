@@ -1,12 +1,10 @@
 import { settings } from "../constants/settings"
 import { ICoords } from "../interfaces"
 
-export class CanvasElement {
-    protected canvas:   HTMLCanvasElement
-    protected context:  CanvasRenderingContext2D
+export abstract class CanvasElement {
+    protected context: CanvasRenderingContext2D
 
-    constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-        this.canvas = canvas
+    constructor(context: CanvasRenderingContext2D) {
         this.context = context
     }
 
@@ -22,4 +20,6 @@ export class CanvasElement {
             settings.RECT_CELL_SIZE
         )
     }
+
+    abstract draw(): void
 }

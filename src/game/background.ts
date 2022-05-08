@@ -2,17 +2,13 @@ import { settings } from "../constants/settings"
 import { CanvasElement } from "./canvasElement"
 
 export class Background extends CanvasElement {
-    constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-        super(canvas, context)
+    constructor(context: CanvasRenderingContext2D) {
+        super(context)
     }
 
     public draw(): void {
         this._drawBackPart()
         this._drawFrontPart()
-    }
-
-    public clear(): void {
-        this.context.clearRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
     }
 
     // background
