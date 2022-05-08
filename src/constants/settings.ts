@@ -13,6 +13,11 @@ const PALETTE = {
     experimental    : 'rgba(206, 206, 206, 0.4)'
 }
 
+const BACKGROUND_CELL_COLOR = PALETTE.experimental
+const BACKGROUND_COLOR = PALETTE.whiteColor
+const SNAKE_COLOR = PALETTE.secondaryColor
+const SNAKE_SPEED = 300
+
 export const settings = {
     CANVAS_SIZE,
     DIMENSION,
@@ -20,5 +25,9 @@ export const settings = {
     RECT_CELL_SIZE,
     CANVAS_CENTER_CELL_POSITION,
     GAP,
-    PALETTE
+    PALETTE,
+    BACKGROUND_CELL_COLOR,
+    BACKGROUND_COLOR,
+    SNAKE_COLOR,
+    SNAKE_SPEED
 }

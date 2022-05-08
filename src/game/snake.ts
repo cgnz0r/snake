@@ -1,53 +1,14 @@
 import { settings } from "../constants/settings"
 import { ICoords } from "../interfaces"
-import { drawBackground } from "./background"
+import { CanvasElement } from "./canvasElement"
 
 enum Direction { Up, Down, Left, Right }
 
-const SNAKE_SPEED = 300
-
-export class Snake {
-    context: CanvasRenderingContext2D
-
-    private _color: string = ''
-
-    get color(): string {
-        return this._color
-    }
-
-    set color(value: string) {
-        this._color = value
-        this.context.fillStyle = value
-    }
-
-    private _headPosition: ICoords = { x: 0, y: 0 }
-
-    public get headPosition(): ICoords {
-        return this._headPosition;
-    }
-
-    public set headPosition(headCoords: ICoords) {
-        this._headPosition = headCoords
-
-        this._tail.forEach(this._drawCell)
-        this._drawCell(headCoords)
-    }
-
-    private _direction: Direction | null = null
-
-    get direction(): Direction | null {
-        return this._direction
-    }
-
-    set direction(value: Direction | null) {
-        if (this._direction === null && value !== null) {
-            this._startCrawling();
-        }
-        this._direction = value
-    }
+export class Snake extends CanvasElement {
+    headPosition: ICoords
+    direction: Direction | null
 
     private _requestId: number | null = null
-
     private _stomach: Array<ICoords> = []
     private _tail: Array<ICoords> = []
 
@@ -62,48 +23,32 @@ export class Snake {
         { x: 0, y: 0 }
     ]
 
-    constructor(context: CanvasRenderingContext2D, color: string) {
-        this.context = context
-        this.color = color
-        this.direction = null
+    constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+        super(canvas, context)
+        super.updateFillStyle(settings.SNAKE_COLOR)
+
         this.headPosition = { 
             x: settings.CANVAS_CENTER_CELL_POSITION, 
             y: settings.CANVAS_CENTER_CELL_POSITION
         }
+        this.drawCell(this.headPosition)
+
+        this.direction = null
 
         // temp block; todo remove
-        this.color = settings.PALETTE.secondaryColorsB[0]
-        this.foodPositions.forEach(this._drawCell)
-        this.color = color
+        super.updateFillStyle(settings.PALETTE.secondaryColorsB[0])
+        this.foodPositions.forEach(this.drawCell.bind(this))
+        super.updateFillStyle(settings.SNAKE_COLOR)
         // end of temp block
 
-        this._initEvents();
+        this._setEvents();
     }
 
-    // todo
-    public watchField = (field: []) => {
-        console.log('snake watching')
-    }
-
-    public kill = (): void => {
+    public kill(): void {
         cancelAnimationFrame(this._requestId as number)
     }
 
-    private _drawCell = (coords: ICoords): void => {
-        this.context.fillRect(
-            coords.x + settings.GAP, 
-            coords.y + settings.GAP,
-            settings.RECT_CELL_SIZE,
-            settings.RECT_CELL_SIZE
-        )
-    }
-
-    private _updateColor = () => {
-        // updating fillStyle through setter; chameleon prevention :D
-        this.color = this._color
-    }
-
-    private _getNewPosition = (dir: Direction): ICoords => {
+    private _getNextPosition(dir: Direction): ICoords {
         switch(dir) {
             case Direction.Up: {
                 const potentialPositionY = this.headPosition.y - settings.CELL_SIZE
@@ -144,32 +89,31 @@ export class Snake {
         }
     }
 
-    private _startCrawling = (): void => {
+    private _startCrawling(): void {
         let start = new Date().getTime()
         
         const loop = () => {
             const delta = new Date().getTime() - start
 
-            if (delta > SNAKE_SPEED) {
+            if (delta > settings.SNAKE_SPEED) {
                 start = new Date().getTime()
                 
-                drawBackground(this.context)
-
+                // todo block opposite
 
 
                 // temp block; _____________________________________________
                 // todo remove
-                this.color = settings.PALETTE.secondaryColorsB[0]
-                this.foodPositions.forEach(this._drawCell)
-                this.color = settings.PALETTE.secondaryColor
+                super.updateFillStyle(settings.PALETTE.secondaryColorsB[0])
+                this.foodPositions.forEach(this.drawCell.bind(this))
+                super.updateFillStyle(settings.PALETTE.secondaryColor)
                 // end of temp block _______________________________________
 
 
 
 
-                this._updateColor()
+                super.updateFillStyle(settings.SNAKE_COLOR)
 
-                let newHeadPosition: ICoords = this._getNewPosition(this.direction as Direction)
+                let nextHeadPosition: ICoords = this._getNextPosition(this.direction as Direction)
 
                 // check if tail is food ;D
                 if (this._tail.some(p => 
@@ -191,12 +135,12 @@ export class Snake {
                 // gastrointestinal tract
 
                 if (this.foodPositions.some(p => 
-                        p.x === newHeadPosition.x
-                        && p.y === newHeadPosition.y
+                        p.x === nextHeadPosition.x
+                        && p.y === nextHeadPosition.y
                     )
                 ) { 
-                    console.log('nyam : digestion :', newHeadPosition)
-                    this._stomach.push(newHeadPosition)
+                    console.log('nyam : digestion :', nextHeadPosition)
+                    this._stomach.push(nextHeadPosition)
                     console.log('stomach :', Object.assign({}, this._stomach))
                 }
 
@@ -234,8 +178,10 @@ export class Snake {
 
 
 
+                this.headPosition = nextHeadPosition
 
-                this.headPosition = newHeadPosition;
+                this._tail.forEach(this.drawCell.bind(this))
+                this.drawCell(nextHeadPosition)
             }
             
             this._requestId = requestAnimationFrame(loop)
@@ -244,35 +190,24 @@ export class Snake {
         this._requestId = requestAnimationFrame(loop)
     }
 
-    private _initEvents = (): void => {
-        const canvas = document.getElementById('cvs') as HTMLElement
+    private _setEvents(): void {
+        const allowableKeys = [37, 38, 39, 40]
 
         let lastPressedKey: number | null = null;
 
-        canvas.addEventListener('keydown', e => {
+        this.canvas.addEventListener('keydown', e => {
+            if (!allowableKeys.includes(e.keyCode)) return
             if (lastPressedKey === e.keyCode) return
     
             lastPressedKey = e.keyCode
 
-            /**
-             * BUG with opposite
-             * example:
-             * press right
-             * press down and left
-             */
+            if (this.direction === null) this._startCrawling();
+
             switch(e.keyCode) {
-                case 37: 
-                    if (this.direction !== Direction.Right) this.direction = Direction.Left; 
-                    break;
-                case 38: 
-                    if (this.direction !== Direction.Down) this.direction = Direction.Up;       
-                    break;
-                case 39: 
-                    if (this.direction !== Direction.Left) this.direction = Direction.Right;  
-                    break;
-                case 40: 
-                    if (this.direction !== Direction.Up) this.direction = Direction.Down;   
-                    break;
+                case 37: this.direction = Direction.Left;   break;
+                case 38: this.direction = Direction.Up;     break;
+                case 39: this.direction = Direction.Right;  break;
+                case 40: this.direction = Direction.Down;   break;
             }
         })
     }

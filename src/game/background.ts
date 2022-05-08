@@ -1,31 +1,37 @@
 import { settings } from "../constants/settings"
+import { CanvasElement } from "./canvasElement"
 
-// colors
-const BACKGROUND_COLOR = settings.PALETTE.whiteColor
-const CELL_COLOR = settings.PALETTE.experimental
+export class Background extends CanvasElement {
+    constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+        super(canvas, context)
+    }
 
-const setBackgroundColor = (ctx: CanvasRenderingContext2D): void => {
-    ctx.fillStyle = BACKGROUND_COLOR
-    ctx.fillRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
-}
+    public draw(): void {
+        this._drawBackPart()
+        this._drawFrontPart()
+    }
 
-const drawCells = (ctx: CanvasRenderingContext2D): void => {
-    ctx.fillStyle = CELL_COLOR
+    public clear(): void {
+        this.context.clearRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
+    }
+
+    // background
+    private _drawBackPart(): void {
+        super.updateFillStyle(settings.BACKGROUND_COLOR)
+        this.context.fillRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
+    }
+
+    // cells
+    private _drawFrontPart(): void {
+        super.updateFillStyle(settings.BACKGROUND_CELL_COLOR)
     
-    for (let i = 0; i < settings.DIMENSION; i++) {
-        for (let j = 0; j < settings.DIMENSION; j++ ) {
-            ctx.fillRect(
-                settings.GAP + settings.CELL_SIZE * i, 
-                settings.GAP + settings.CELL_SIZE * j, 
-                settings.RECT_CELL_SIZE, 
-                settings.RECT_CELL_SIZE
-            )
+        for (let i = 0; i < settings.DIMENSION; i++) {
+            for (let j = 0; j < settings.DIMENSION; j++ ) {
+                super.drawCell({
+                    x: settings.CELL_SIZE * i,
+                    y: settings.CELL_SIZE * j
+                })
+            }
         }
     }
-}
-
-export const drawBackground = (ctx: CanvasRenderingContext2D): void => {
-    ctx.clearRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
-    setBackgroundColor(ctx)
-    drawCells(ctx)
 }
