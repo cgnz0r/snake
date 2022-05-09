@@ -1,8 +1,9 @@
-import { settings } from "../constants/settings"
-import { Direction, ICoords } from "../interfaces"
+
+import { settings } from "../../constants/settings"
+import { ICoords, Direction } from "../../interfaces"
 import { CanvasElement } from "./canvasElement"
 
-const CANVAS_CENTER = { 
+const CANVAS_CENTER = {
     x: settings.CANVAS_CENTER_CELL_POSITION, 
     y: settings.CANVAS_CENTER_CELL_POSITION
 }
@@ -61,51 +62,55 @@ export class Snake extends CanvasElement {
         }
     }
 
-    public getNextHeadPosition(direction: Direction): ICoords {
+    public getNextSnakeSlots(direction: Direction): Array<ICoords> {
+        let headPosition;
         switch(direction) {
             case Direction.Up: {
                 const potentialPositionY = this.headPosition.y - settings.CELL_SIZE
-                return {
+                headPosition = {
                     x: this.headPosition.x,
                     y: potentialPositionY < 0 
                         ? settings.CANVAS_SIZE - settings.CELL_SIZE 
                         : potentialPositionY
                 }
+                break
             }
             case Direction.Down: {
                 const potentialPositionY = this.headPosition.y + settings.CELL_SIZE
-                return {
+                headPosition = {
                     x: this.headPosition.x,
                     y: potentialPositionY + settings.CELL_SIZE > settings.CANVAS_SIZE 
                         ? 0
                         : potentialPositionY
                 }
+                break
             }
             case Direction.Left: {
                 const potentialPositionX = this.headPosition.x - settings.CELL_SIZE
-                return {
+                headPosition = {
                     x: potentialPositionX < 0
                         ? settings.CANVAS_SIZE - settings.CELL_SIZE
                         : potentialPositionX,
                     y: this.headPosition.y
                 }
+                break
             }
             case Direction.Right: {
                 const potentialPositionX = this.headPosition.x + settings.CELL_SIZE
-                return {
+                headPosition = {
                     x: potentialPositionX + settings.CELL_SIZE > settings.CANVAS_SIZE
                         ? 0
                         : potentialPositionX,
                     y: this.headPosition.y
                 }
+                break
             }
         }
+
+        return [ headPosition, this.headPosition, ...this._tail.slice(0,-1) ]
     }
 
     public checkCollision(nextHeadPosition: ICoords): boolean {
-        return this._tail.some(p => 
-            p.x === nextHeadPosition.x 
-            && p.y === nextHeadPosition.y
-        )
+        return this._tail.some(p => p.x === nextHeadPosition.x && p.y === nextHeadPosition.y)
     }
 }

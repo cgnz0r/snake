@@ -1,8 +1,7 @@
 import { settings } from "../constants/settings"
 import { Direction } from "../interfaces"
-import { Background } from "./background"
-import { FruitField } from "./fruitField"
-import { Snake } from "./snake"
+import { Field } from "./canvasElements/field"
+import { Snake } from "./canvasElements/snake"
 
 const canvas = <HTMLCanvasElement>document.getElementById('canvas')
 const context = canvas.getContext('2d')
@@ -15,32 +14,29 @@ const clearCanvas = () => { context.clearRect(0, 0, settings.CANVAS_SIZE, settin
 
 canvas.focus()
 
-const background = new Background(context)
-const snake = new Snake(context)
-const fruitField = new FruitField(context)
+const field = new Field(context)
+field.draw()
 
-background.draw()
+const snake = new Snake(context)
 snake.draw()
-fruitField.draw()
 
 const scene = () => {
     clearCanvas()
 
-    background.draw()
-
-    const snakeHeadPosition = snake.getNextHeadPosition(direction)
+    const snakePositions = snake.getNextSnakeSlots(direction)
+    const snakeHeadPosition = snakePositions[0]
     
     if (snake.checkCollision(snakeHeadPosition)) {
         alert('Oops.. You lose')
         cancelAnimationFrame(requestId)
     }
 
-    const isFruitEaten = fruitField.checkEating(snakeHeadPosition)
+    const isFruitEaten = field.updateOccupiedSlots(snakePositions)
+
+    field.draw()
 
     snake.crawl(snakeHeadPosition, isFruitEaten)
     snake.draw()
-
-    fruitField.draw()
 }
 
 // loop

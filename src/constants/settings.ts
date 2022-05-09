@@ -2,6 +2,7 @@ const CANVAS_SIZE                   = 640
 const DIMENSION                     = 16 // 25bug
 const GAP                           = 1  // 0.5bug
 const GAME_SPEED                    = 300
+const FRUITS_QTY_AT_MOMENT          = 2
 const CELL_SIZE                     = CANVAS_SIZE / DIMENSION
 const RECT_CELL_SIZE                = CELL_SIZE - GAP * 2
 const CANVAS_CENTER_CELL_POSITION   = GAP * Math.ceil(CANVAS_SIZE / 2 / GAP)
@@ -25,6 +26,7 @@ export const settings = {
     DIMENSION,
     GAP,
     GAME_SPEED,
+    FRUITS_QTY_AT_MOMENT,
 
     // cell size & position
     CELL_SIZE,

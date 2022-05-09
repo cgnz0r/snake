@@ -1,5 +1,5 @@
-import { settings } from "../constants/settings"
-import { ICoords } from "../interfaces"
+import { settings } from "../../constants/settings"
+import { ICoords } from "../../interfaces"
 
 export abstract class CanvasElement {
     protected context: CanvasRenderingContext2D
