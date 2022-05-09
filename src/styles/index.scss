@@ -7,9 +7,80 @@ body {
     align-items: center;
     flex-direction: column;
     gap: 24px;
+    font-family: 'Quantico', sans-serif;
+    user-select: none;
 }
 
 #canvas {
     border: 1px solid rgb(214, 214, 214);
     outline: none;
+}
+
+.overlay {
+    visibility: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    display:  flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,.6);
+    backdrop-filter: blur(4px);
+
+    &__content {
+        font-size: 3em;
+        color: white;
+        text-align: center;
+    }
+}
+
+.sad-pepe {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 6em;
+    height: 6em;
+}
+
+#left-arrow-svg,
+#right-arrow-svg,
+#up-arrow-svg,
+#down-arrow-svg {
+    user-select: none;
+}
+
+#left-pressed, #right-pressed, #up-pressed, #down-pressed {
+    visibility: hidden;
+}
+
+#right-arrow-svg {
+    transform: rotate(180deg);
+}
+
+#up-arrow-svg {
+    transform: rotate(90deg);
+}
+
+#down-arrow-svg {
+    transform: rotate(-90deg);
+}
+
+.arrows-container {
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(6px);
+    background-color: rgba(0,0,0,.7);
+    position: fixed;
+}
+
+.arrows-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.other-arrows-container {
+    display: flex;
+    flex-direction: row;
 }

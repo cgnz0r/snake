@@ -23,6 +23,15 @@ module.exports = {
                     'css-loader',
                     'sass-loader'
                 ]
+            },
+            {
+                test: /\.(ico|gif|png|jpe?g|svg)$/,
+                use: [{
+                    loader: 'file-loader', 
+                    options: {
+                        esModule: false
+                    }
+                }]
             }
         ]
     },

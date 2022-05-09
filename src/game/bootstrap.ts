@@ -4,10 +4,14 @@ import { Field } from "./canvasElements/field"
 import { Snake } from "./canvasElements/snake"
 import { frame } from "./frame"
 
+import sadPepe from "../assets/sad-pepe.png"
+
 const canvas = <HTMLCanvasElement>document.getElementById('canvas')
 const context = canvas.getContext('2d')
 
 if (!context) throw 'No context for canvas'
+
+console.log('loading game...')
 
 let direction: Direction
 
@@ -29,12 +33,29 @@ function loop(): void {
     if (deltaTime > settings.GAME_SPEED) {
         startTime = new Date().getTime()
         
-        const result = frame(context as CanvasRenderingContext2D, snake, field, direction)
+        const result = frame(context!, snake, field, direction)
         
         lastAplliedDirection = direction
         
         if (!result) {
-            alert('oops you lose')
+            const overlay = document.getElementById('overlay')
+            overlay!.style.visibility = 'visible'
+
+            const content = document.getElementById('overlay__content')
+
+            const img = document.createElement('img')
+            img.src = String(sadPepe)
+            img.classList.add('sad-pepe')
+            content?.appendChild(img)
+
+            const text = document.createElement('p')
+            text.innerText = 'You lose'
+            content?.appendChild(text)
+
+            const replayText = document.createElement('p')
+            replayText.innerText = 'Score: '
+            content?.appendChild(replayText)
+
             cancelAnimationFrame(requestId)
             return
         }
@@ -49,7 +70,7 @@ const setEvents = (): void => {
     let lastPressedKey: string | null = null;
     let isGameStarted = false
 
-    canvas.addEventListener('keydown', e => {
+    document.addEventListener('keydown', e => {
         if (!allowableKeys.includes(e.key)) return
         if (lastPressedKey === e.key) return
 
@@ -87,6 +108,7 @@ const setEvents = (): void => {
         }
 
         if (!isGameStarted) {
+            console.log('starting game...')
             loop()
             isGameStarted = true
         }
@@ -95,5 +117,4 @@ const setEvents = (): void => {
 
 export const start = () => {
     setEvents()
-    console.log('starting game...')
 }
