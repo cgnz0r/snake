@@ -3,11 +3,6 @@ import { settings } from "../../constants/settings"
 import { ICoords, Direction } from "../../interfaces"
 import { CanvasElement } from "./canvasElement"
 
-const CANVAS_CENTER = {
-    x: settings.CANVAS_CENTER_CELL_POSITION, 
-    y: settings.CANVAS_CENTER_CELL_POSITION
-}
-
 export class Snake extends CanvasElement {
     headPosition: ICoords
 
@@ -18,7 +13,7 @@ export class Snake extends CanvasElement {
         super(context)
         super.updateFillStyle(settings.SNAKE_COLOR)
 
-        this.headPosition = CANVAS_CENTER
+        this.headPosition = settings.INITIAL_SNAKE_POSITION
     }
 
     public draw(): void {
@@ -42,28 +37,21 @@ export class Snake extends CanvasElement {
             return isDigested
         })
 
-        if (digestedFruitCoords) {
-            console.log('snake :: digested fruit :', digestedFruitCoords)
-            this._stomach = [
-                ...this._stomach.slice(0, removeIdx), 
-                ...this._stomach.slice(1 + removeIdx)
-            ]
-            console.log('snake :: grew by 1!')
-        } else {
-            this._tail.pop();
-        }
+        if (digestedFruitCoords) this._stomach.splice(removeIdx, 1)
+        else this._tail.pop()
 
         this.headPosition = position
 
-        if (hasFruit) {
-            console.log('snake :: eating fruit :', position)
-            this._stomach.push(position)
-            console.log('snake :: stomach :', Object.assign({}, this._stomach))
-        }
+        if (hasFruit) this._stomach.push(position)
     }
 
-    public getNextSnakeSlots(direction: Direction): Array<ICoords> {
-        let headPosition;
+    /**
+     * Calculates next snake slots or notifies about crash
+     * @param direction snake's direction :: up, down, left, right
+     * @returns false if snake ate itself; otherwise next snake slots
+     */
+    public getNextSnakeSlots(direction: Direction): Array<ICoords> | boolean {
+        let headPosition: ICoords;
         switch(direction) {
             case Direction.Up: {
                 const potentialPositionY = this.headPosition.y - settings.CELL_SIZE
@@ -107,10 +95,13 @@ export class Snake extends CanvasElement {
             }
         }
 
-        return [ headPosition, this.headPosition, ...this._tail.slice(0,-1) ]
-    }
+        // ate itself
+        if (this._tail.some(p => 
+            p.x === headPosition.x 
+            && p.y === headPosition.y
+        )) return false
 
-    public checkCollision(nextHeadPosition: ICoords): boolean {
-        return this._tail.some(p => p.x === nextHeadPosition.x && p.y === nextHeadPosition.y)
+        // next snake slots
+        return [ headPosition, this.headPosition, ...this._tail.slice(0,-1) ]
     }
 }

@@ -2,7 +2,7 @@ import { settings } from "../../constants/settings";
 import { ICoords } from "../../interfaces";
 import { CanvasElement } from "./canvasElement";
 
-export class Fruit extends CanvasElement {
+export class FruitItem extends CanvasElement {
     private _position: ICoords
 
     constructor(context: CanvasRenderingContext2D, position: ICoords) {
@@ -11,12 +11,19 @@ export class Fruit extends CanvasElement {
         this._position = position
     }
 
+    /**
+     * Draws fruit
+     */
     public draw(): void {
         super.updateFillStyle(settings.FRUIT_COLOR)
         this.drawCell(this._position)
     }
 
-    public getPosition(): ICoords {
+    /**
+     * Returns fruit coords
+     * @returns 
+     */
+    public getCoords(): ICoords {
         return this._position
     }
 }

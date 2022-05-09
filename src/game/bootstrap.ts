@@ -2,15 +2,14 @@ import { settings } from "../constants/settings"
 import { Direction } from "../interfaces"
 import { Field } from "./canvasElements/field"
 import { Snake } from "./canvasElements/snake"
+import { frame } from "./frame"
 
 const canvas = <HTMLCanvasElement>document.getElementById('canvas')
 const context = canvas.getContext('2d')
 
 if (!context) throw 'No context for canvas'
 
-let direction: Direction = Direction.Up
-
-const clearCanvas = () => { context.clearRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE) }
+let direction: Direction
 
 canvas.focus()
 
@@ -20,66 +19,81 @@ field.draw()
 const snake = new Snake(context)
 snake.draw()
 
-const scene = () => {
-    clearCanvas()
-
-    const snakePositions = snake.getNextSnakeSlots(direction)
-    const snakeHeadPosition = snakePositions[0]
-    
-    if (snake.checkCollision(snakeHeadPosition)) {
-        alert('Oops.. You lose')
-        cancelAnimationFrame(requestId)
-    }
-
-    const isFruitEaten = field.updateOccupiedSlots(snakePositions)
-
-    field.draw()
-
-    snake.crawl(snakeHeadPosition, isFruitEaten)
-    snake.draw()
-}
-
-// loop
-let startTime = new Date().getTime()
 let requestId: number
+let startTime = new Date().getTime()
+let lastAplliedDirection: Direction | null = null
 
-const loop = () => {
+function loop(): void {
     const deltaTime = new Date().getTime() - startTime
 
     if (deltaTime > settings.GAME_SPEED) {
         startTime = new Date().getTime()
-        scene()
+        
+        const result = frame(context as CanvasRenderingContext2D, snake, field, direction)
+        
+        lastAplliedDirection = direction
+        
+        if (!result) {
+            alert('oops you lose')
+            cancelAnimationFrame(requestId)
+            return
+        }
     }
 
     requestId = requestAnimationFrame(loop)
 }
 
-requestId = requestAnimationFrame(loop)
-
 const setEvents = (): void => {
-    const allowableKeys = [37, 38, 39, 40]
+    const allowableKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
 
-    let lastPressedKey: number | null = null;
+    let lastPressedKey: string | null = null;
+    let isGameStarted = false
 
     canvas.addEventListener('keydown', e => {
-        if (!allowableKeys.includes(e.keyCode)) return
-        if (lastPressedKey === e.keyCode) return
+        if (!allowableKeys.includes(e.key)) return
+        if (lastPressedKey === e.key) return
 
-        lastPressedKey = e.keyCode
+        lastPressedKey = e.key
 
-        // todo block opposite 
+        switch(e.key) {
+            case 'ArrowLeft': {
+                direction = lastAplliedDirection !== null
+                    && lastAplliedDirection === Direction.Right
+                    ? Direction.Right
+                    : Direction.Left
+                break
+            }
+            case 'ArrowUp': {
+                direction = lastAplliedDirection !== null
+                    && lastAplliedDirection === Direction.Down
+                    ? Direction.Down
+                    : Direction.Up
+                break
+            }
+            case 'ArrowRight': {
+                direction = lastAplliedDirection !== null
+                    && lastAplliedDirection === Direction.Left
+                    ? Direction.Left
+                    : Direction.Right
+                break
+            }
+            case 'ArrowDown': {
+                direction = lastAplliedDirection !== null
+                    && lastAplliedDirection === Direction.Up
+                    ? Direction.Up
+                    : Direction.Down
+                break
+            }
+        }
 
-        switch(e.keyCode) {
-            case 37: direction = Direction.Left;   break;
-            case 38: direction = Direction.Up;     break;
-            case 39: direction = Direction.Right;  break;
-            case 40: direction = Direction.Down;   break;
+        if (!isGameStarted) {
+            loop()
+            isGameStarted = true
         }
     })
 }
 
-setEvents()
-
 export const start = () => {
+    setEvents()
     console.log('starting game...')
 }

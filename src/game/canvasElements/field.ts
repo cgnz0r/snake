@@ -1,7 +1,7 @@
 import { settings } from "../../constants/settings"
 import { ICoords } from "../../interfaces"
 import { CanvasElement } from "./canvasElement"
-import { Fruit } from "./fruit"
+import { FruitList } from "./fruitList"
 
 let mockFruitsStack: Array<ICoords> = [
     { x: settings.CELL_SIZE * 5, y: settings.CELL_SIZE },
@@ -15,45 +15,40 @@ let mockFruitsStack: Array<ICoords> = [
 
 // background and fruits management
 export class Field extends CanvasElement {
-    fruitList: Array<Fruit> = []
-    occupiedSlots: Array<ICoords> = []
+    fruitList: FruitList
+    occupiedSlots: Array<ICoords>
 
     constructor(context: CanvasRenderingContext2D) {
         super(context)
 
-        const spawnedFruits = this._spawnFruits(settings.FRUITS_QTY_AT_MOMENT)
-        if (spawnedFruits) this._updateFruitList(spawnedFruits as Array<Fruit>)
+        this.fruitList = new FruitList(context);
+
+        this.occupiedSlots = [ settings.INITIAL_SNAKE_POSITION ]
+
+        this._spawnFruits(settings.FRUITS_QTY_AT_MOMENT)
     }
 
     public draw(): void {
         this._drawBackPart()
         this._drawFrontPart()
-        this.fruitList.forEach(fruit => fruit.draw())
+        this.fruitList.draw()
     }
 
+    /**
+     * Updates inner ocuppied array and notifies about collapse
+     * @param slots Snake's slots on field
+     * @returns Collapse flag :: if snake ate fruit it returns true; otherwise false
+     */
     public updateOccupiedSlots(slots: Array<ICoords>): boolean {
-        const poedenniyFruit = this.fruitList.find(fruit => {
-            const fruitPosition = fruit.getPosition()
-            return fruitPosition.x === slots[0].x && fruitPosition.y === slots[0].y
-        })
-        if (poedenniyFruit) {
-        // test replace after
-            const poedenniyPosition = poedenniyFruit.getPosition();
-            const fruitIdx = this.fruitList.findIndex(fruit => {
-                const fruitPosition = fruit.getPosition();
+        this.occupiedSlots.splice(0, this.occupiedSlots.length -1, ...slots)
+        const isFruitEaten = this.fruitList.has(slots[0])
 
-                return fruitPosition.x === poedenniyPosition.x && fruitPosition.y === poedenniyPosition.y
-            })
-
-            this._updateFruitList([
-                ...this.fruitList.slice(0, fruitIdx), 
-                ...this.fruitList.slice(1 + fruitIdx)
-            ])
-
-            return true
+        if (isFruitEaten) {
+            this.fruitList.remove(slots[0])
+            this._spawnFruits(1)
         }
 
-        return false
+        return isFruitEaten
     }
 
     // background
@@ -76,24 +71,42 @@ export class Field extends CanvasElement {
         }
     }
 
-    private _updateFruitList(fruitList: Array<Fruit>): void {
-        if (fruitList.length < settings.FRUITS_QTY_AT_MOMENT) {
-            const spawnQty = settings.FRUITS_QTY_AT_MOMENT - fruitList.length
-            const spawnedFruits = this._spawnFruits(spawnQty)
-            if (spawnedFruits) fruitList.push(...spawnedFruits as Array<Fruit>)
-        }
+    private _getFreeSlots(): Array<ICoords> {
+        const freeSlots: Array<ICoords> = []
+        for (let i = 0; i < settings.DIMENSION; i++) {
+            for (let j = 0; j < settings.DIMENSION; j++ ) {
+                const currSlotCoords = {
+                    x: settings.CELL_SIZE * i,
+                    y: settings.CELL_SIZE * j
+                }
+                const isCurrSlotOccupied = this.occupiedSlots.some(slotCoords => 
+                    slotCoords.x === currSlotCoords.x
+                    && slotCoords.y === currSlotCoords.y
+                )
+                const isCurrSlotFruit = this.fruitList.has(currSlotCoords)
 
-        this.fruitList = fruitList
+                if (!isCurrSlotOccupied && !isCurrSlotFruit) {
+                    freeSlots.push(currSlotCoords)
+                }
+            }
+        }
+        
+        return freeSlots
     }
 
-    private _spawnFruits(fruitsQty: number): Array<Fruit> | boolean {
-        const spawnedFruits = []
+    private _spawnFruits(fruitsQty: number): void {
+        const freeSlots = this._getFreeSlots();
+
+        const randomize = (min: number, max: number) => Math.round((Math.random() * (max - min)) + min)
+
         for (let i = 0; i < fruitsQty; i++) {
-            if (mockFruitsStack.length === 0) return false
+            if (mockFruitsStack.length === 0) return
 
-            spawnedFruits.push(new Fruit(this.context, mockFruitsStack.shift()!))
+            const idx = randomize(0, freeSlots.length - 1)
+
+            this.fruitList.add(freeSlots[idx])
+
+            freeSlots.splice(idx, 1)
         }
-
-        return spawnedFruits
     }
 }
