@@ -36,7 +36,7 @@ function loop(): void {
         lastAplliedDirection = direction
         
         if (!result) {
-
+            alert('you lose')
             cancelAnimationFrame(requestId)
             return
         }
