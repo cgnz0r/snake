@@ -4,8 +4,6 @@ import { Field } from "./canvasElements/field"
 import { Snake } from "./canvasElements/snake"
 import { frame } from "./frame"
 
-import sadPepe from "../assets/sad-pepe.png"
-
 const canvas = <HTMLCanvasElement>document.getElementById('canvas')
 const context = canvas.getContext('2d')
 
@@ -38,23 +36,6 @@ function loop(): void {
         lastAplliedDirection = direction
         
         if (!result) {
-            const overlay = document.getElementById('overlay')
-            overlay!.style.visibility = 'visible'
-
-            const content = document.getElementById('overlay__content')
-
-            const img = document.createElement('img')
-            img.src = String(sadPepe)
-            img.classList.add('sad-pepe')
-            content?.appendChild(img)
-
-            const text = document.createElement('p')
-            text.innerText = 'You lose'
-            content?.appendChild(text)
-
-            const replayText = document.createElement('p')
-            replayText.innerText = 'Score: '
-            content?.appendChild(replayText)
 
             cancelAnimationFrame(requestId)
             return

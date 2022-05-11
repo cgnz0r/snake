@@ -1,4 +1,3 @@
-import { settings } from "../../constants/settings";
 import { ICoords } from "../../interfaces";
 import { CanvasElement } from "./canvasElement";
 import { FruitItem } from "./fruitItem";
