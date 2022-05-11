@@ -3,16 +3,6 @@ import { ICoords } from "../../interfaces"
 import { CanvasElement } from "./canvasElement"
 import { FruitList } from "./fruitList"
 
-let mockFruitsStack: Array<ICoords> = [
-    { x: settings.CELL_SIZE * 5, y: settings.CELL_SIZE },
-    { x: settings.CELL_SIZE, y: settings.CELL_SIZE * 2 },
-    { x: settings.CELL_SIZE, y: settings.CELL_SIZE },
-    { x: settings.CELL_SIZE * 6, y: settings.CELL_SIZE * 7 },
-    { x: settings.CELL_SIZE * 3, y: settings.CELL_SIZE * 3 },
-    { x: settings.CELL_SIZE * 8, y: settings.CELL_SIZE * 2 }, 
-    { x: 0, y: 0 }
-]
-
 // background and fruits management
 export class Field extends CanvasElement {
     fruitList: FruitList
@@ -100,8 +90,6 @@ export class Field extends CanvasElement {
         const randomize = (min: number, max: number) => Math.round((Math.random() * (max - min)) + min)
 
         for (let i = 0; i < fruitsQty; i++) {
-            if (mockFruitsStack.length === 0) return
-
             const idx = randomize(0, freeSlots.length - 1)
 
             this.fruitList.add(freeSlots[idx])
