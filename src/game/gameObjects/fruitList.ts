@@ -1,22 +1,19 @@
 import { ICoords } from "../../interfaces";
-import { CanvasElement } from "./canvasElement";
 import { FruitItem } from "./fruitItem";
 
-export class FruitList extends CanvasElement {
+export class FruitList {
     fruitList: Array<FruitItem>
 
-    constructor(context: CanvasRenderingContext2D) {
-        super(context)
-
+    constructor() {
         this.fruitList = []
     }
 
     /**
      * Draws fruits
      */
-    public draw(): void {
-        this.fruitList.forEach(fruit => fruit.draw())
-    }
+    // public draw(): void {
+    //     this.fruitList.forEach(fruit => fruit.draw())
+    // }
 
     getLength(): number {
         return this.fruitList.length
@@ -40,7 +37,7 @@ export class FruitList extends CanvasElement {
      * @param {ICoords} fruitCoords Fruit Coords
      */
     public add(fruitCoords: ICoords): void {
-        const fruit = new FruitItem(this.context, fruitCoords)
+        const fruit = new FruitItem(fruitCoords)
         this.fruitList.push(fruit)
     }
 

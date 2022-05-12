@@ -84,3 +84,24 @@ body {
     display: flex;
     flex-direction: row;
 }
+
+.buttons-container {
+    display: flex;
+    gap: 16px;
+
+    & button {
+        padding: 8px 16px;
+        background-color: #fafafa;
+        border-radius: 4px;
+        border: 1px solid gray;
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: 0 2px 2px rgb(136, 136, 136);
+        }
+
+        &:active {
+            box-shadow: 0 2px 4px rgb(59, 59, 59);
+        }
+    }
+}

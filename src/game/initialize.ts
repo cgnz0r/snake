@@ -1,49 +1,18 @@
-import { settings } from "../constants/settings"
-import { Direction } from "../interfaces"
-import { Field } from "./canvasElements/field"
-import { Snake } from "./canvasElements/snake"
-import { frame } from "./frame"
+// import { settings } from "../constants/settings"
+// import { Direction } from "../interfaces"
+// import { Field } from "./canvasElements/field"
+import { Snake } from "./gameObjects/Snake"
+import { BackgroundView } from "./drawable/BackgroundView"
+import { SnakeView } from "./drawable/SnakeView"
+import { Game } from "./Game"
+import { Scene } from "./drawable/Scene"
+import { IGame } from "../interfaces"
 
-const canvas = <HTMLCanvasElement>document.getElementById('canvas')
-const context = canvas.getContext('2d')
-
-if (!context) throw 'No context for canvas'
-
-console.log('loading game...')
-
+/*
 let direction: Direction
 
-canvas.focus()
-
-const field = new Field(context)
-field.draw()
-
-const snake = new Snake(context)
-snake.draw()
-
 let requestId: number
-let startTime = new Date().getTime()
 let lastAplliedDirection: Direction | null = null
-
-function loop(): void {
-    const deltaTime = new Date().getTime() - startTime
-
-    if (deltaTime > settings.GAME_SPEED) {
-        startTime = new Date().getTime()
-        
-        const result = frame(context!, snake, field, direction)
-        
-        lastAplliedDirection = direction
-        
-        if (!result) {
-            alert('you lose')
-            cancelAnimationFrame(requestId)
-            return
-        }
-    }
-
-    requestId = requestAnimationFrame(loop)
-}
 
 const setEvents = (): void => {
     const allowableKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
@@ -95,7 +64,21 @@ const setEvents = (): void => {
         }
     })
 }
+*/
+export const initGame = (): IGame => {
+    const canvas = <HTMLCanvasElement>document.getElementById('canvas')
+    const context = canvas.getContext('2d')
 
-export const start = () => {
-    setEvents()
+    if (!context) throw 'No context for canvas'
+
+    canvas.focus()
+
+    // todo: fruits
+    const snake = new Snake()
+    const backgroundView = new BackgroundView(context)
+    const snakeView = new SnakeView(context, snake)
+    const scene = new Scene(context, backgroundView, snakeView)
+    const game = new Game(scene, snake)
+    
+    return game
 }

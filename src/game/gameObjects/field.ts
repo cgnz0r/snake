@@ -1,17 +1,14 @@
 import { settings } from "../../constants/settings"
 import { ICoords } from "../../interfaces"
-import { CanvasElement } from "./canvasElement"
 import { FruitList } from "./fruitList"
 
 // background and fruits management
-export class Field extends CanvasElement {
+export class Field {
     fruitList: FruitList
     occupiedSlots: Array<ICoords>
 
-    constructor(context: CanvasRenderingContext2D) {
-        super(context)
-
-        this.fruitList = new FruitList(context);
+    constructor() {
+        this.fruitList = new FruitList();
 
         this.occupiedSlots = [ settings.INITIAL_SNAKE_POSITION ]
 
@@ -19,9 +16,7 @@ export class Field extends CanvasElement {
     }
 
     public draw(): void {
-        this._drawBackPart()
-        this._drawFrontPart()
-        this.fruitList.draw()
+        // this.fruitList.draw()
     }
 
     /**
@@ -41,34 +36,11 @@ export class Field extends CanvasElement {
         return isFruitEaten
     }
 
-    // background
-    private _drawBackPart(): void {
-        super.updateFillStyle(settings.BACKGROUND_COLOR)
-        this.context.fillRect(0, 0, settings.CANVAS_SIZE, settings.CANVAS_SIZE)
-    }
-
-    // cells
-    private _drawFrontPart(): void {
-        super.updateFillStyle(settings.BACKGROUND_CELL_COLOR)
-    
-        for (let i = 0; i < settings.DIMENSION; i++) {
-            for (let j = 0; j < settings.DIMENSION; j++ ) {
-                super.drawCell({
-                    x: settings.CELL_SIZE * i,
-                    y: settings.CELL_SIZE * j
-                })
-            }
-        }
-    }
-
     private _getFreeSlots(): Array<ICoords> {
         const freeSlots: Array<ICoords> = []
-        for (let i = 0; i < settings.DIMENSION; i++) {
-            for (let j = 0; j < settings.DIMENSION; j++ ) {
-                const currSlotCoords = {
-                    x: settings.CELL_SIZE * i,
-                    y: settings.CELL_SIZE * j
-                }
+        for (let x = 0; x < settings.DIMENSION; x++) {
+            for (let y = 0; y < settings.DIMENSION; y++ ) {
+                const currSlotCoords = { x, y }
                 const isCurrSlotOccupied = this.occupiedSlots.some(slotCoords => 
                     slotCoords.x === currSlotCoords.x
                     && slotCoords.y === currSlotCoords.y
