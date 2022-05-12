@@ -12,8 +12,8 @@ export class SnakeView extends Drawable implements IDrawable {
 
     public draw(): void {
         super._updateFillStyle(settings.SNAKE_COLOR)
-        const head = this._snake.getHeadPosition()
-        const tail = this._snake.getTailPositions()
+        const head = this._snake.getHead()
+        const tail = this._snake.getTail()
 
         this._drawCell(head.x, head.y)
         tail.forEach(pos => this._drawCell.call(this, pos.x, pos.y))

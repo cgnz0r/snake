@@ -12,11 +12,11 @@ export class Snake implements ISnake {
         this._head = settings.INITIAL_SNAKE_POSITION
     }
 
-    public getHeadPosition(): ICoords {
+    public getHead(): ICoords {
         return this._head
     }
 
-    public getTailPositions(): Array<ICoords> {
+    public getTail(): Array<ICoords> {
         return this._tail;
     }
 

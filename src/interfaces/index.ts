@@ -53,8 +53,8 @@ export interface IScene extends IDrawable {
 }
 
 export interface ISnake {
-    getHeadPosition(): ICoords
-    getTailPositions(): Array<ICoords>
+    getHead(): ICoords
+    getTail(): Array<ICoords>
     setNextCoords(head: ICoords, hasFruit: boolean): void
     getNextCoords(direction: Direction): Array<ICoords> | boolean
     reset(): void
