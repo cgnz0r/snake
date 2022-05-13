@@ -1,5 +1,5 @@
 import { settings } from "../constants/settings";
-import { Direction, ICoords, IScene, ISnake, Mode, IGame } from "../interfaces";
+import { Direction, ICoords, IScene, ISnake, Mode, IGame, IControls, Key } from "../interfaces";
 
 export class Game implements IGame {
     private _scene: IScene
@@ -17,6 +17,10 @@ export class Game implements IGame {
         this._isGameStarted = false
 
         this._scene.draw()
+    }
+
+    public setControls(key: Key): void {
+        console.log('game :: setControls : key', key)
     }
 
     public start(): void {

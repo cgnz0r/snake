@@ -20,28 +20,22 @@ export enum Key {
 }
 
 export interface IKeys {
-    [Key.RightKey]: number,
-    [Key.LeftKey]: number,
-    [Key.UpKey]: number,
-    [Key.DownKey]: number,
-    [Key.PauseKey]: number,
-    [Key.ContinueKey]: number,
-    [Key.StopKey]: number
-}
-
-export interface IKeyCallbacks {
-    [Key.RightKey]: () => void,
-    [Key.LeftKey]: () => void,
-    [Key.UpKey]: () => void,
-    [Key.DownKey]: () => void,
-    [Key.PauseKey]: () => void,
-    [Key.ContinueKey]: () => void,
-    [Key.StopKey]: () => void
+    [Key.RightKey]      : number,
+    [Key.LeftKey]       : number,
+    [Key.UpKey]         : number,
+    [Key.DownKey]       : number,
+    [Key.PauseKey]      : number,
+    [Key.ContinueKey]   : number,
+    [Key.StopKey]       : number
 }
 
 export interface ICoords {
     x: number,
     y: number
+}
+
+export interface IControllable {
+    setControls(key: Key): void
 }
 
 export interface IDrawable {
@@ -52,7 +46,7 @@ export interface IScene extends IDrawable {
     clear(): void
 }
 
-export interface ISnake {
+export interface ISnake extends IControllable {
     getHead(): ICoords
     getTail(): Array<ICoords>
     setNextCoords(head: ICoords, hasFruit: boolean): void
@@ -60,7 +54,7 @@ export interface ISnake {
     reset(): void
 }
 
-export interface IGame {
+export interface IGame extends IControllable {
     start(): void
     pause(): void
     stop(): void
@@ -68,6 +62,6 @@ export interface IGame {
 }
 
 export interface IControls {
-    assignKey(key: Key, keyCode: number, keyCallback: () => void): void
-    getKeyCode(key: Key): number
+    assignKey(key: Key, keyCode: number): void
+    getKey(keyCode: number): Key | undefined
 }

@@ -1,6 +1,6 @@
 
 import { settings } from "../../constants/settings"
-import { ICoords, Direction } from "../../interfaces"
+import { ICoords, Direction, Key } from "../../interfaces"
 import { ISnake } from "../../interfaces"
 
 export class Snake implements ISnake {
@@ -18,6 +18,10 @@ export class Snake implements ISnake {
 
     public getTail(): Array<ICoords> {
         return this._tail;
+    }
+
+    public setControls(key: Key): void {
+        console.log('snek :: setControls : key', key)
     }
 
     public reset(): void {

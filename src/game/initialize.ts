@@ -6,7 +6,10 @@ import { BackgroundView } from "./drawable/BackgroundView"
 import { SnakeView } from "./drawable/SnakeView"
 import { Game } from "./Game"
 import { Scene } from "./drawable/Scene"
-import { IGame } from "../interfaces"
+import { IGame, Key } from "../interfaces"
+import { Controls } from "./Controls"
+import { EventNotifier } from "./EventNotifier"
+import { settings } from "../constants/settings"
 
 /*
 let direction: Direction
@@ -73,12 +76,19 @@ export const initGame = (): IGame => {
 
     canvas.focus()
 
+    const controls = new Controls(settings.DEFAULT_KEYS)
+    const notifier = new EventNotifier(controls)
+
     // todo: fruits
     const snake = new Snake()
+    notifier.subscribe(snake.setControls, [Key.UpKey, Key.DownKey, Key.LeftKey, Key.RightKey])
+
     const backgroundView = new BackgroundView(context)
     const snakeView = new SnakeView(context, snake)
     const scene = new Scene(context, backgroundView, snakeView)
+
     const game = new Game(scene, snake)
+    notifier.subscribe(game.setControls, [Key.ContinueKey, Key.PauseKey, Key.StopKey])
     
     return game
 }

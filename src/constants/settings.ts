@@ -1,3 +1,5 @@
+import { Key } from "../interfaces"
+
 const CANVAS_SIZE                   = 640
 const DIMENSION                     = 16 // 25bug
 const GAP                           = 1  // 0.5bug
@@ -24,6 +26,16 @@ const BACKGROUND_COLOR      = PALETTE.whiteColor
 const SNAKE_COLOR           = PALETTE.secondaryColor
 const FRUIT_COLOR           = PALETTE.secondaryColorsB[2]
 
+const DEFAULT_KEYS = {
+    [Key.LeftKey]:      37, // left arrow
+    [Key.UpKey]:        38, // up arrow
+    [Key.RightKey]:     39, // right arrow
+    [Key.DownKey]:      40, // down arrow
+    [Key.ContinueKey]:  13, // enter
+    [Key.PauseKey]:     32, // space
+    [Key.StopKey]:      27, // esc
+}
+
 export const settings = {
     // game
     CANVAS_SIZE,
@@ -42,5 +54,8 @@ export const settings = {
     BACKGROUND_CELL_COLOR,
     BACKGROUND_COLOR,
     SNAKE_COLOR,
-    FRUIT_COLOR
+    FRUIT_COLOR,
+
+    // controls 
+    DEFAULT_KEYS
 }
